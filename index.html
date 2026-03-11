@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>360° Life Transformation Blueprint</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--accent:#E85D04;--dark:#0A0A0A;--card:#141414;--border:#222;--muted:#888;--green:#2DC653;--blue:#3A86FF;--purple:#8338EC;--warm:#F77F00;--pink:#E056A0;--teal:#0EA5E9;--red:#EF4444}
+body{background:var(--dark);color:#eee;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;min-height:100vh}
+.header{background:linear-gradient(135deg,var(--dark),#1a0a00,var(--dark));border-bottom:1px solid var(--border);padding:24px 16px 18px;text-align:center}
+.header-label{font-size:10px;letter-spacing:4px;color:var(--accent);font-weight:700;text-transform:uppercase;margin-bottom:4px}
+.header h1{font-size:22px;font-weight:800;color:#fff}
+.header p{margin-top:6px;color:var(--muted);font-size:11px}
+.badges{display:flex;gap:6px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.badge{padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.tabs{display:flex;border-bottom:1px solid var(--border);overflow-x:auto;background:#0d0d0d;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab-btn{flex:0 0 auto;padding:8px 10px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-btn .icon{font-size:14px}
+.tab-btn .label{margin-top:1px}
+.content{padding:14px 14px 60px;max-width:640px;margin:0 auto}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.intro{color:var(--muted);font-size:12px;margin-bottom:14px;line-height:1.6}
+.timeline-row{display:flex;gap:12px;margin-bottom:2px}
+.timeline-time{display:flex;flex-direction:column;align-items:center;width:56px;flex-shrink:0}
+.timeline-time span{font-size:10px;color:var(--muted);font-weight:600;white-space:nowrap}
+.timeline-line{width:2px;flex:1;background:var(--border);margin-top:4px}
+.timeline-line.last{background:transparent}
+.timeline-card{flex:1;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:8px;cursor:pointer;transition:all .2s}
+.timeline-card.open{border-color:rgba(255,255,255,.15)}
+.timeline-head{display:flex;align-items:center;gap:8px}
+.timeline-head .emoji{font-size:16px}
+.timeline-head .title{font-size:13px;font-weight:600;flex:1}
+.timeline-detail{margin-top:10px;font-size:13px;color:#ccc;line-height:1.7;border-top:1px solid var(--border);padding-top:10px;display:none}
+.timeline-card.open .timeline-detail{display:block}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px}
+.card-title{font-size:13px;font-weight:700;margin-bottom:12px}
+.expand{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;cursor:pointer;transition:all .2s}
+.expand-head{display:flex;align-items:center;gap:10px}
+.expand-head .emoji{font-size:18px}
+.expand-head .title{font-size:13px;font-weight:700;flex:1}
+.expand-head .toggle{color:var(--muted);font-size:16px}
+.expand-detail{margin-top:12px;font-size:13px;color:#ccc;line-height:1.8;border-top:1px solid var(--border);padding-top:12px;display:none}
+.expand.open .expand-detail{display:block}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.bar-label{width:90px;font-size:11px;color:var(--muted);text-transform:capitalize}
+.bar-track{flex:1;height:8px;background:#222;border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px}
+.bar-val{font-size:12px;color:#ccc;width:45px;text-align:right}
+.item-row{display:flex;gap:10px;margin-bottom:10px;align-items:flex-start}
+.item-row .emoji{font-size:18px;flex-shrink:0}
+.item-title{font-size:12px;font-weight:700}
+.item-desc{font-size:11px;color:#bbb;line-height:1.5;margin-top:2px}
+.line-item{font-size:12px;color:#ccc;padding:4px 0 4px 12px;margin-bottom:3px;line-height:1.6}
+.study-block{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;cursor:pointer;transition:all .2s}
+.study-block .head{display:flex;align-items:center;gap:10px}
+.study-block .num{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0}
+.study-block .week{font-size:11px;font-weight:700;letter-spacing:.5px}
+.study-block .name{font-size:15px;font-weight:700;margin-top:2px}
+.study-detail{margin-top:14px;border-top:1px solid var(--border);padding-top:14px;display:none}
+.study-block.open .study-detail{display:block}
+.sub-title{font-size:12px;font-weight:700;margin-bottom:6px}
+.resource{font-size:12px;color:#aaa;padding:2px 0 2px 12px}
+.cert-box{margin-top:12px;padding:8px 12px;border-radius:8px;font-size:12px;font-weight:700}
+.day-toggle{display:flex;gap:8px;margin-bottom:14px}
+.day-toggle button{flex:1;padding:10px;border-radius:10px;border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit;transition:all .2s}
+.weekly-day{border-radius:12px;padding:12px;margin-bottom:8px}
+.weekly-row{display:flex;gap:8px;margin-bottom:4px}
+.weekly-label{width:40px;font-size:10px;font-weight:700;padding-top:1px;flex-shrink:0}
+.weekly-val{font-size:11px;color:#bbb;line-height:1.4}
+.targets-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.target-box{border-radius:8px;padding:8px 6px;text-align:center}
+.target-val{font-size:16px;font-weight:800}
+.target-label{font-size:9px;color:var(--muted);margin-top:2px}
+.score-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;padding:6px 0}
+.score-row .emoji{font-size:16px}
+.score-row .habit{flex:1;font-size:12px;color:#ccc}
+.score-pts{padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700}
+.gradient-box{border-radius:12px;padding:14px;margin-top:10px}
+.replace-old{font-size:11px;text-decoration:line-through}
+.replace-new{font-size:12px;font-weight:600;margin-top:2px}
+.content-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px}
+.content-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.content-month{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+.community{margin-bottom:10px}
+.community .name{font-size:12px;font-weight:700;color:#fff}
+.community .desc{font-size:11px;color:#bbb;line-height:1.5;margin-top:3px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-label">360° Life Transformation</div>
+  <h1>Your Complete Blueprint</h1>
+  <p>DevOps → Platform Engineer / SRE + Fit + Founder</p>
+  <div class="badges">
+    <span class="badge" style="background:#2DC65322;color:#2DC653">10K Steps</span>
+    <span class="badge" style="background:#3A86FF22;color:#3A86FF">2hr Study</span>
+    <span class="badge" style="background:#8338EC22;color:#8338EC">Gym 6x</span>
+    <span class="badge" style="background:#F77F0022;color:#F77F00">12 Tabs</span>
+  </div>
+</div>
+
+<div class="tabs" id="tabs"></div>
+<div class="content" id="content"></div>
+
+<script>
+const COLORS = {fitness:'#2DC653',study:'#3A86FF',mindset:'#8338EC',health:'#F77F00',work:'#888',startup:'#E85D04',neutral:'#555'};
+const ACCENT='#E85D04',GREEN='#2DC653',BLUE='#3A86FF',PURPLE='#8338EC',WARM='#F77F00',PINK='#E056A0',TEAL='#0EA5E9',RED='#EF4444',MUTED='#888';
+
+const tabsData = [
+  {label:'Daily',icon:'⏰'},{label:'Weekend',icon:'📅'},{label:'Study',icon:'📚'},{label:'Meals',icon:'🥗'},
+  {label:'Mindset',icon:'🧠'},{label:'Detox',icon:'📵'},{label:'Portfolio',icon:'💻'},{label:'Network',icon:'🤝'},
+  {label:'Habits',icon:'✅'},{label:'Bad Day',icon:'🛟'},{label:'Content',icon:'📸'},{label:'Weekly',icon:'📊'}
+];
+
+const daily = [
+  {time:'7:00 AM',activity:'Wake Up — No Phone, Mindset Reset',icon:'☀️',type:'mindset',detail:'Splash cold water on face. No phone for first 10 min. Say "I can do hard things." Write 3 things you\'re grateful for. Drink a full glass of water. This kills the overthinking loop before it starts.'},
+  {time:'7:10 AM',activity:'Pre-Workout Fuel + Get Ready',icon:'🍌',type:'health',detail:'Quick bite: banana + black coffee OR a handful of dry fruits + water. Don\'t go to gym on empty stomach. Get your gym bag ready the night before — zero friction in the morning.'},
+  {time:'7:30 AM',activity:'GYM — Weight Training + Cardio',icon:'🏋️',type:'fitness',detail:'45-60 min. Push/Pull/Legs split. Start with compound lifts (squats, deadlifts, bench press). End with 15 min incline treadmill walk (~2,000 steps). Morning gym = discipline locked in before the world can distract you. NON-NEGOTIABLE.'},
+  {time:'8:30 AM',activity:'Post-Workout Breakfast — High Protein',icon:'🍳',type:'health',detail:'Eat within 30-45 min of gym. Eggs + toast OR oats + banana + peanut butter + protein shake. Target 30-40g protein. Keep under 500 cal. Biggest meal of the day — you\'ve earned it.'},
+  {time:'9:00 AM',activity:'Study Block 1 — Deep Technical Study',icon:'📚',type:'study',detail:'Post-gym brain is SHARP — endorphins + focus. GOLDEN HOUR. Study Kubernetes, Terraform, or AWS per the weekly plan. No phone. Pomodoro (25 min study, 5 min rest). Even 30 min compounds massively.'},
+  {time:'9:30 AM',activity:'Commute / Travel to Office',icon:'🚌',type:'neutral',detail:'Listen to a tech podcast: DevOps Paradox, Kubernetes Podcast, or Cloud Unfiltered. Turn dead commute time into passive learning.'},
+  {time:'10:00 AM',activity:'Office — Do Assigned Work Fast',icon:'💼',type:'work',detail:'Complete tasks quickly. Screenshot tasks? Finish in 30 min. Don\'t fight the system, outgrow it. The faster you finish their work, the more time you reclaim for YOUR work.'},
+  {time:'10:30 AM',activity:'Office — Stealth Study Mode',icon:'🥷',type:'study',detail:'Open terminal. Practice kubectl commands, write Terraform configs, explore AWS console. Looks like work, IS your future career. Apply to 2 jobs during this window.'},
+  {time:'1:00 PM',activity:'Lunch — Walk + Eat Clean',icon:'🥗',type:'health',detail:'2,000 steps during/after lunch. Dal + roti + sabzi OR salad with protein. Avoid fried food. Skip the gossip table — eat alone or with positive people only.'},
+  {time:'1:45 PM',activity:'Office — Continue Study / Apply',icon:'📝',type:'study',detail:'Apply to 2-3 more positions. Update LinkedIn. Work on a side project that demonstrates DevOps/SRE skills — this IS your portfolio.'},
+  {time:'4:00 PM',activity:'Office — Startup Research',icon:'🚀',type:'startup',detail:'30-45 min researching startup ideas. Validate problems. Read about bootstrapping. Note ideas in a dedicated notebook. Think: what DevOps problem can I solve as a product?'},
+  {time:'5:00 PM',activity:'Office — Wrap Up + Walk',icon:'🏢',type:'neutral',detail:'1,000 steps around the building. Prepare tomorrow\'s task list. Close all tabs clean. Mental closure before leaving.'},
+  {time:'7:00 PM',activity:'Leave Office + Commute',icon:'🏠',type:'neutral',detail:'Listen to audiobook or podcast. Atomic Habits, The Hard Thing About Hard Things, Zero to One.'},
+  {time:'7:30 PM',activity:'Evening Walk — 3,000 steps',icon:'🚶',type:'fitness',detail:'Brisk walk after reaching home. Decompression time. No phone, no social media. Walk at a pace where talking feels slightly hard.'},
+  {time:'8:15 PM',activity:'Dinner — Light and Clean',icon:'🍲',type:'health',detail:'Protein + veggies + minimal carbs. Chicken/paneer/eggs + salad or sabzi. Under 500 cal. No heavy food after 8:30 PM. Daily target: ~1800-2000 cal.'},
+  {time:'9:00 PM',activity:'Study Block 2 — Lighter Study',icon:'💻',type:'study',detail:'1 YouTube tutorial or hands-on lab. Revision time, not new concepts. Review morning study. Practice on KodeKloud/Udemy labs.'},
+  {time:'10:00 PM',activity:'Wind Down — No Screens',icon:'📖',type:'mindset',detail:'Read 10 pages (non-fiction preferred). Journal: What went well? What will I do better? Write negative thoughts and physically cross them out.'},
+  {time:'10:30 PM',activity:'Sleep Prep',icon:'😴',type:'mindset',detail:'Phone on airplane mode. Room dark and cool. Visualize the person you\'re becoming. Target: asleep by 11 PM. Sleep is when muscles grow and knowledge consolidates.'}
+];
+
+const weekend = {
+  saturday: [
+    {time:'7:00 AM',activity:'Wake Up — Gratitude + Water',icon:'☀️',type:'mindset',detail:'Same wake-up ritual. Consistency doesn\'t take weekends off.'},
+    {time:'7:30 AM',activity:'GYM — Full Body + Extended Cardio',icon:'🏋️',type:'fitness',detail:'Full body workout + 30 min cardio. Power gym day. Push harder — heavier weights or longer sets.'},
+    {time:'9:00 AM',activity:'Big Post-Workout Breakfast',icon:'🍳',type:'health',detail:'Biggest meal. Eggs, toast, fruit, protein shake. Refuel after the harder workout.'},
+    {time:'9:30 AM',activity:'Deep Study Block — 2 Hours',icon:'📚',type:'study',detail:'WEEKLY POWER SESSION. No interruptions. Dive deep into certification topic. Hands-on labs, not just videos.'},
+    {time:'11:30 AM',activity:'Startup / Side Project Work',icon:'🚀',type:'startup',detail:'2 hours building your startup MVP or side project. Code something real. Ship something small.'},
+    {time:'1:30 PM',activity:'Lunch + Cheat Meal (if earned)',icon:'🍕',type:'health',detail:'ONE cheat meal of the week. Enjoy guilt-free. But keep it to ONE meal, not a cheat day.'},
+    {time:'2:30 PM',activity:'Instagram Content Creation',icon:'📸',type:'startup',detail:'Work on this month\'s post. Shoot photos/videos, design carousels, write captions. Batch create.'},
+    {time:'4:00 PM',activity:'Grocery Shopping + Meal Prep',icon:'🛒',type:'health',detail:'Buy groceries for the week. Start prepping: boil eggs, cut veggies, cook chicken/paneer, portion snacks.'},
+    {time:'6:00 PM',activity:'Social Time / Personal',icon:'😊',type:'neutral',detail:'Call family, meet a positive friend, or relax. You need human connection. Avoid energy vampires.'},
+    {time:'8:00 PM',activity:'Light Dinner + Relax',icon:'🎬',type:'neutral',detail:'Wind down. Watch something, relax. Stop screens by 10 PM.'},
+    {time:'10:30 PM',activity:'Plan Sunday + Sleep',icon:'😴',type:'mindset',detail:'15 min planning Sunday. Lay out gym clothes. Sleep by 11 PM.'}
+  ],
+  sunday: [
+    {time:'8:00 AM',activity:'Wake Up — 1 Hour Extra Sleep',icon:'☀️',type:'mindset',detail:'One extra hour. Earned. Don\'t go past 8 AM — protect sleep cycle.'},
+    {time:'8:30 AM',activity:'Active Recovery — Long Walk (5K steps)',icon:'🚶',type:'fitness',detail:'No gym. Long walk outside — park, nature trail. Active recovery + mental reset. Audiobook. 45-60 min.'},
+    {time:'9:30 AM',activity:'Big Healthy Breakfast',icon:'🍳',type:'health',detail:'Cook something nice — omelette with veggies, smoothie bowl, poha. Sunday breakfast = reward.'},
+    {time:'10:00 AM',activity:'Weekly Review + Planning',icon:'📋',type:'mindset',detail:'THE MOST IMPORTANT HOUR. Review: study progress, jobs applied, steps, gym sessions. Rate each area 1-10. Plan next week.'},
+    {time:'11:00 AM',activity:'Study — Review + Mock Tests',icon:'📚',type:'study',detail:'Review the week\'s learning. Practice test or mock exam. Identify weak spots. Consolidation, not new material.'},
+    {time:'12:30 PM',activity:'Meal Prep Round 2',icon:'🥘',type:'health',detail:'Cook large batch of dal, chicken, or paneer. Portion lunches for Mon-Wed. Pre-cut salad ingredients.'},
+    {time:'2:00 PM',activity:'Energy Audit',icon:'🔋',type:'mindset',detail:'List every person, app, habit. Mark +Energy or -Energy. Reduce one -Energy item next week.'},
+    {time:'3:00 PM',activity:'Networking / Open Source / LinkedIn',icon:'🤝',type:'study',detail:'LinkedIn post, open source contribution, or reach out to 2-3 DevOps/SRE people.'},
+    {time:'4:30 PM',activity:'Free Time — Hobby / Rest',icon:'🎯',type:'neutral',detail:'Something enjoyable, not screen-based. Cook, walk, meet someone, explore. Recharge.'},
+    {time:'7:00 PM',activity:'Light Dinner + Monday Prep',icon:'🍲',type:'health',detail:'Clean dinner. Prep bag, gym clothes, lunch for Monday. Set 3 intentions for the week.'},
+    {time:'9:00 PM',activity:'Early Sleep',icon:'😴',type:'mindset',detail:'Read, journal, relax. Bed 30 min early — start the week fully charged.'}
+  ]
+};
+
+const studyPlan = [
+  {week:'Week 1-4',title:'Kubernetes Deep Dive',topics:['CKA Exam Prep — Pods, Deployments, Services','RBAC, Network Policies, Security Contexts','Helm Charts + Kustomize','Troubleshooting clusters like a pro'],resources:['KodeKloud CKA Course','Mumshad\'s Kubernetes Labs','YouTube: TechWorld with Nana — K8s playlist'],cert:'CKA (Certified Kubernetes Administrator)',color:BLUE},
+  {week:'Week 5-8',title:'Terraform + IaC Mastery',topics:['Terraform state management, workspaces','Modules, variables, outputs — production patterns','Multi-cloud provisioning (AWS + GCP)','Terraform Cloud / Atlantis for team workflows'],resources:['HashiCorp Learn Portal','YouTube: Sid\'s Tech — Terraform playlist','KodeKloud Terraform Course'],cert:'HashiCorp Terraform Associate',color:PURPLE},
+  {week:'Week 9-12',title:'AWS Solutions Architect',topics:['VPC, EC2, S3, IAM deep dive','EKS, Lambda, API Gateway','CloudFormation vs Terraform tradeoffs','Cost optimization + Well-Architected Framework'],resources:['Adrian Cantrill\'s SAA Course','Stephane Maarek on Udemy','AWS Free Tier hands-on labs'],cert:'AWS Solutions Architect Associate',color:ACCENT},
+  {week:'Week 13-16',title:'Platform Engineering + SRE',topics:['SLIs, SLOs, SLAs — defining reliability','Observability: Prometheus + Grafana + ELK','Incident management, postmortems','Internal Developer Platforms (Backstage, Port)'],resources:['Google SRE Book (free online)','YouTube: DevOps Toolkit','Backstage.io documentation'],cert:'Build an internal platform portfolio project',color:GREEN},
+  {week:'Week 17-20',title:'AI/ML for DevOps Engineers',topics:['Python basics for automation','LLM APIs — OpenAI, Anthropic, local models','AI-powered monitoring & AIOps concepts','Building CLI tools with AI integration'],resources:['YouTube: Fireship — AI explained','Anthropic docs + Claude API','FastAPI + LangChain tutorials'],cert:'Portfolio: AI-powered DevOps tool',color:WARM},
+  {week:'Week 21-24',title:'AI-Proof Earning Skills',topics:['DevOps consulting — package your knowledge','Technical content creation (blog + YouTube)','Freelancing on Toptal / Upwork for DevOps','SaaS idea validation + MVP building'],resources:['YouTube: Ali Abdaal — Freelancing','Indie Hackers community','Pieter Levels — MAKE book'],cert:'Launch freelance profile OR MVP',color:PINK}
+];
+
+const meals = {
+  items: [
+    {meal:'Pre-Workout (7:10 AM)',cal:'~100',items:['1 banana OR handful of almonds/cashews','Black coffee (no sugar) OR green tea','1 glass water'],note:'Just enough fuel to power the workout.'},
+    {meal:'Breakfast (8:30 AM)',cal:'~450',items:['3 whole eggs scrambled/boiled + 2 toast','OR: Oats (50g) + banana + 1 tbsp peanut butter','Protein shake (1 scoop whey + water/milk)'],note:'BIGGEST meal. 30-40g protein minimum.'},
+    {meal:'Mid-Morning Snack (11:30 AM)',cal:'~150',items:['1 apple or seasonal fruit','10 almonds or walnuts','Green tea'],note:'Keeps metabolism active.'},
+    {meal:'Lunch (1:00 PM)',cal:'~500',items:['2 roti + dal + sabzi','OR: Brown rice (small) + rajma/chole + salad','OR: Grilled chicken/paneer (150g) + salad + 1 roti','Buttermilk or lemon water'],note:'Protein + fiber. Carry from home.'},
+    {meal:'Evening Snack (5:00 PM)',cal:'~100',items:['Roasted chana (50g) OR makhana','OR: 1 small fruit + green tea'],note:'Light boost. Skip if not hungry.'},
+    {meal:'Dinner (8:15 PM)',cal:'~450',items:['Grilled chicken/fish (150g) + stir-fry veggies','OR: Paneer bhurji (150g) + salad + 1 roti','OR: 3 egg whites + sauteed veggies + salad','No rice at dinner. Max 1 roti.'],note:'Light and protein-focused. No food after 9 PM.'}
+  ],
+  grocery: [
+    {cat:'🥩 Proteins',items:'Eggs (30/week), chicken breast (1kg), paneer (500g), whey protein, dal (moong, masoor, chana), rajma, chole, tofu'},
+    {cat:'🌾 Carbs',items:'Oats (1kg), whole wheat atta, brown rice, whole wheat bread, bananas (7), sweet potatoes'},
+    {cat:'🥬 Veggies',items:'Spinach, broccoli, capsicum, tomatoes, onions, cucumber, carrots, lauki, cabbage, frozen veggies'},
+    {cat:'🍎 Fruits',items:'Apples (7), seasonal fruit (1kg), lemons (6), any berries'},
+    {cat:'🥜 Snacks',items:'Almonds (200g), walnuts (100g), roasted chana (500g), makhana (200g), peanut butter (1 jar)'},
+    {cat:'🫙 Others',items:'Olive/mustard oil, green tea, coffee, spices, curd (1kg), buttermilk, milk'}
+  ],
+  rules: ['Total daily: 1800-2000 calories','Protein: 120g+ per day','Water: 3-4 liters daily','No sugary drinks — no cola, no packaged juice, no sweet chai','No fried food Mon-Fri. Cheat meal Saturday lunch ONLY','Meal prep Sunday: boil 15 eggs, cook protein, cut veggies','Carry lunch to office — saves money AND calories','Eating out: choose grilled/tandoori over fried/creamy']
+};
+
+const mindset = [
+  {rule:'Zero Gossip Policy',icon:'🚫',detail:'Every minute on gossip is stolen from your future. When colleagues start backbiting, physically leave. Say "I need to finish something." Gossip is a drug — withdrawal is uncomfortable but freedom is on the other side.'},
+  {rule:'The 5-Second Rule',icon:'⏱️',detail:'When a negative thought hits, count 5-4-3-2-1 and physically move or start a task. Overthinking is your brain running a loop — interrupt it with action.'},
+  {rule:'Compare Down, Then Forward',icon:'📈',detail:'Compare to where YOU were 6 months ago. Then look forward: where will you be in 6 months with this plan? That gap is your motivation.'},
+  {rule:'Earn Respect, Don\'t Seek It',icon:'💎',detail:'Current workplace doesn\'t value you? Good. Use anger as fuel, not poison. Become so skilled their opinion becomes irrelevant.'},
+  {rule:'Identity-Based Change',icon:'🪞',detail:'Don\'t say "I\'m trying to lose weight." Say "I\'m someone who takes care of their body." Say "I\'m a Platform Engineer at a bad job right now." Become the person first.'},
+  {rule:'Energy Audit Every Sunday',icon:'🔋',detail:'List every person, activity, habit. Mark +Energy or -Energy. Ruthlessly reduce -Energy items. This includes toxic WhatsApp groups and people who only complain.'},
+  {rule:'The Hard Things Mantra',icon:'🔥',detail:'Every morning: "I can do hard things." Gym tired? Do it. Study after work? Do it. Walk away from gossip? Do it. Stack enough hard things = unstoppable.'},
+  {rule:'Document Everything',icon:'📓',detail:'Keep a log of every skill learned, lab completed, cert passed. When imposter syndrome hits, open this log. Evidence beats emotion.'}
+];
+
+const detox = {
+  remove: [
+    {app:'Instagram Explore',action:'Turn off. Only open to POST. Set 15 min daily limit.',icon:'📱'},
+    {app:'Toxic WhatsApp Groups',action:'Leave every gossip/meme/negativity group. Keep: family, close friends, 1-2 tech groups.',icon:'💬'},
+    {app:'News Apps / Negative Media',action:'Uninstall. If something important happens, you\'ll hear about it.',icon:'📰'},
+    {app:'YouTube Shorts / Reels',action:'Disable Shorts. YouTube = learning ONLY. Install "Unhook" extension.',icon:'🎬'}
+  ],
+  replace: [
+    {old:'30 min scrolling in bed',rep:'10 min gratitude journal + 10 pages reading',icon:'📖'},
+    {old:'Lunch hour gossip',rep:'Walk + podcast or eat alone with course',icon:'🎧'},
+    {old:'Evening social media binge',rep:'Evening walk (3,000 steps, no phone)',icon:'🚶'},
+    {old:'Late night reels/shorts',rep:'Wind down: journal + book + visualization',icon:'🧘'},
+    {old:'WhatsApp drama groups',rep:'1 DevOps/SRE Slack/Discord community',icon:'💻'}
+  ],
+  rules: ['Phone airplane mode 10:30 PM to 7:10 AM','Screen Time: 30 min daily for ALL social media','No phone during meals','No phone first 10 min after waking','One phone-free hour: evening walk','Unfollow anyone who makes you feel bad','Follow ONLY: tech educators, fitness motivation, builders']
+};
+
+const portfolio = {
+  projects: [
+    {name:'K8s Home Lab Setup',desc:'Document entire Kubernetes home lab: cluster, monitoring (Prometheus/Grafana), CI/CD, GitOps (ArgoCD). Architecture diagrams + detailed README.',time:'Week 3-6',color:BLUE},
+    {name:'Terraform Multi-Cloud Modules',desc:'Reusable Terraform modules for AWS + GCP. VPC, EKS/GKE, RDS/Cloud SQL, S3/GCS. Production-grade with variables and outputs.',time:'Week 7-10',color:PURPLE},
+    {name:'AI-Powered DevOps CLI Tool',desc:'CLI tool using LLM APIs for DevOps: generate Terraform configs, debug K8s issues, analyze logs. Open source it.',time:'Week 17-22',color:ACCENT},
+    {name:'Internal Developer Platform (Mini)',desc:'Small IDP using Backstage or custom solution. Service catalog, deployment templates, self-service infra.',time:'Week 14-18',color:GREEN}
+  ],
+  profile: ['Professional profile photo (not a selfie)','Bio: "Platform Engineer | CKA Certified | Building AI-powered DevOps tools"','Pin 3 best repos at the top','Every repo: README with screenshots, clean code, .gitignore, LICENSE','Green contribution graph — commit daily, even small fixes','Profile README with project links and certs']
+};
+
+const networking = {
+  linkedin: [
+    {action:'Optimize Profile',detail:'Headline: "DevOps / Platform Engineer | CKA | AWS | Terraform". Tech banner. About: your story in 3 paragraphs.',freq:'Once, update monthly'},
+    {action:'Post Content Weekly',detail:'Share learnings: "Today I learned about K8s Network Policies..." 5-8 lines + takeaway.',freq:'1-2x per week'},
+    {action:'Comment on Leaders\' Posts',detail:'Follow 20 DevOps/SRE leaders. Thoughtful comments, not "great post!" Add your perspective.',freq:'Daily, 5-10 min'},
+    {action:'Cold DMs to Recruiters',detail:'Search "DevOps recruiter". Personalized connection requests. Short, specific, professional.',freq:'5 per week'},
+    {action:'Engage Target Companies',detail:'Follow target companies. Comment on their tech posts. Connect with their DevOps team.',freq:'3-4x per week'}
+  ],
+  communities: [
+    {name:'DevOps Chandigarh Meetup',desc:'Search meetup.com. If none exist, START ONE — instant authority.',type:'Local'},
+    {name:'CNCF Slack Workspace',desc:'Free. Channels for K8s, Helm, Argo, Prometheus. Ask and answer questions.',type:'Online'},
+    {name:'KubeHuddle / DevOpsDays',desc:'Virtual or in-person conferences. Learn what companies need.',type:'Conference'},
+    {name:'r/devops + r/kubernetes',desc:'Lurk first, then contribute. Teaching solidifies your own learning.',type:'Reddit'},
+    {name:'Hashnode / Dev.to Blog',desc:'1 technical blog per month. CKA journey, Terraform learnings. Ranks on Google.',type:'Content'}
+  ]
+};
+
+const habits = {
+  daily: [
+    {habit:'Gym completed',icon:'🏋️',pts:10},{habit:'10,000 steps',icon:'🦶',pts:5},{habit:'Study Block 1 (AM)',icon:'📚',pts:10},
+    {habit:'Study Block 2 (PM)',icon:'💻',pts:5},{habit:'Clean eating',icon:'🥗',pts:5},{habit:'Zero gossip',icon:'🚫',pts:10},
+    {habit:'No social media binge',icon:'📵',pts:5},{habit:'Gratitude journal',icon:'📓',pts:5},{habit:'Applied 2+ jobs',icon:'💼',pts:5},{habit:'8 hours sleep',icon:'😴',pts:5}
+  ],
+  tools: [
+    {tool:'Notion Habit Tracker',icon:'📋',detail:'Simple table: rows = habits, columns = days. Check off daily. Free. Review every Sunday.'},
+    {tool:'Streaks (iOS) / Loop (Android)',icon:'🔗',detail:'Top 5 non-negotiable habits. Tracks streaks. After 30 days, you\'ll NEVER break the chain.'},
+    {tool:'Body Measurements Log',icon:'📐',detail:'Every Sunday: weight, waist, chest, arms. Progress photo. Trust numbers, not mirror.'},
+    {tool:'GitHub Contribution Graph',icon:'🟩',detail:'Green squares = accountability. One commit per day. The graph doesn\'t lie.'},
+    {tool:'Weekly Review Template',icon:'📊',detail:'Rate each area 1-10 (fitness, study, career, mindset, nutrition). One WIN + one IMPROVEMENT each.'}
+  ]
+};
+
+const badDay = {
+  minimum: [
+    {task:'Walk 5,000 steps (not 10K)',icon:'🚶',detail:'Half steps > zero. Walk during lunch and after office.'},
+    {task:'Study 20 min (not 2 hours)',icon:'📚',detail:'ONE video. ONE article. Keep the streak alive.'},
+    {task:'Eat at least 2 clean meals',icon:'🥗',detail:'Even if one meal is junk, make two clean. Damage control.'},
+    {task:'Zero gossip (NON-NEGOTIABLE)',icon:'🚫',detail:'On bad days you\'re extra vulnerable. This rule NEVER breaks.'},
+    {task:'Journal 3 lines before bed',icon:'📓',detail:'What happened? Why bad? What differently? Three lines prevent bad days from becoming bad weeks.'}
+  ],
+  triggers: [
+    {trigger:'Manager disrespected you',response:'Write it down. Open study notes. Channel anger: "I\'m getting out." Apply to 3 extra jobs. Revenge = career upgrade.'},
+    {trigger:'Missed gym / broke diet',response:'One miss doesn\'t erase a week. Speed bump, not cliff. Walk instead. Tomorrow gym is non-negotiable.'},
+    {trigger:'Feeling overwhelmed',response:'Pick ONE task. Just one. Complete it. Then another. You do the NEXT thing.'},
+    {trigger:'Comparing to others online',response:'Close app. Open progress log. Look at 30 days ago. Do one push-up. Action breaks spirals.'},
+    {trigger:'Zero motivation',response:'Normal. Motivation is unreliable. Follow minimum viable day above. Survive today.'},
+    {trigger:'Job rejection',response:'Every rejection = data point. Ask feedback. Tweak resume. Apply to 3 more.'}
+  ],
+  mantra:'A bad day following the plan is better than a good day without one. You don\'t need to be perfect — you need to be consistent. The person who shows up on bad days wins.'
+};
+
+const contentPlan = [
+  {month:1,topic:'My DevOps Home Lab Setup',format:'Carousel (8-10 slides)',hook:'Show your K8s cluster, monitoring dashboard, tools.',tags:'#DevOps #HomeLab #Kubernetes'},
+  {month:2,topic:'5 Tools Every DevOps Engineer Needs in 2026',format:'Reel (60-90 sec)',hook:'Quick cuts showing each tool. Fast, visual, punchy.',tags:'#DevOps #CloudEngineering #TechTools'},
+  {month:3,topic:'My Transformation Journey — Month 3',format:'Carousel with photos',hook:'Vulnerability wins. Show progress, not perfection.',tags:'#Transformation #FitnessJourney #GrowthMindset'},
+  {month:4,topic:'How I Passed CKA While Working Full-Time',format:'Reel + caption',hook:'Study routine + struggles + result. Gold content.',tags:'#CKA #Kubernetes #CertificationJourney'},
+  {month:5,topic:'Building an AI-Powered DevOps Tool',format:'Carousel (code + demo)',hook:'Problem → solution → code → result.',tags:'#AI #DevOps #BuildInPublic'},
+  {month:6,topic:'6-Month Transformation',format:'Reel (montage)',hook:'Full story compilation. Breakout post potential.',tags:'#6MonthChallenge #Transformation #DevOps'}
+];
+
+const weeklyData = [
+  {day:'Monday',gym:'7:30 AM — Push (Chest+Shoulders+Tri)',am:'Primary Topic — New Concepts',pm:'Practice Labs',extra:'Apply to 3 jobs'},
+  {day:'Tuesday',gym:'7:30 AM — Pull (Back+Biceps)',am:'Primary Topic — Deep Dive',pm:'YouTube Tutorial',extra:'Apply to 2 jobs'},
+  {day:'Wednesday',gym:'7:30 AM — Legs + Core',am:'Primary Topic — Hands-on',pm:'Revision Notes',extra:'Startup research 45min'},
+  {day:'Thursday',gym:'7:30 AM — Push (variation)',am:'Secondary Topic — Intro',pm:'Practice Labs',extra:'Apply to 3 jobs'},
+  {day:'Friday',gym:'7:30 AM — Pull (variation)',am:'Secondary Topic — Deep Dive',pm:'Portfolio project',extra:'Content prep'},
+  {day:'Saturday',gym:'7:30 AM — Full Body+30min Cardio',am:'2hr deep study',pm:'Mock exam',extra:'Startup MVP 2hrs'},
+  {day:'Sunday',gym:'8:00 AM — Recovery Walk (5K)',am:'Review week',pm:'Plan next week',extra:'Energy Audit+Meal Prep'}
+];
+
+const steps = [{label:'Gym Treadmill',val:2000},{label:'Lunch Walk',val:2000},{label:'Office',val:1000},{label:'Evening Walk',val:3000},{label:'Misc',val:2000}];
+
+// ===== RENDER HELPERS =====
+function badge(text, color) { return `<span class="badge" style="background:${color}22;color:${color}">${text}</span>`; }
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function renderTimeline(items, prefix) {
+  return items.map((it, i) => {
+    const c = COLORS[it.type] || MUTED;
+    return `<div class="timeline-row">
+      <div class="timeline-time"><span>${it.time}</span><div class="timeline-line ${i===items.length-1?'last':''}"></div></div>
+      <div class="timeline-card" onclick="toggleCard(this)" style="--c:${c}">
+        <div class="timeline-head">
+          <span class="emoji">${it.icon}</span>
+          <span class="title">${esc(it.activity)}</span>
+          ${badge(it.type, c)}
+        </div>
+        <div class="timeline-detail">${esc(it.detail)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderExpand(items, colorFn) {
+  return items.map((it, i) => {
+    const c = typeof colorFn === 'function' ? colorFn(i) : colorFn;
+    return `<div class="expand" onclick="toggleCard(this)">
+      <div class="expand-head">
+        ${it.icon ? `<span class="emoji">${it.icon}</span>` : ''}
+        <span class="title">${esc(it.title || it.rule || it.tool || it.action || it.project || it.name || '')}</span>
+        <span class="toggle">+</span>
+      </div>
+      <div class="expand-detail">${it.detailHtml || esc(it.detail || it.desc || it.response || '')}</div>
+    </div>`;
+  }).join('');
+}
+
+// ===== TAB RENDERERS =====
+function renderTab(index) {
+  switch(index) {
+    case 0: return renderDaily();
+    case 1: return renderWeekend();
+    case 2: return renderStudy();
+    case 3: return renderMeals();
+    case 4: return renderMindset();
+    case 5: return renderDetox();
+    case 6: return renderPortfolio();
+    case 7: return renderNetwork();
+    case 8: return renderHabits();
+    case 9: return renderBadDay();
+    case 10: return renderContent();
+    case 11: return renderWeekly();
+  }
+}
+
+function renderDaily() {
+  const stepsHtml = steps.map(s => `<div class="bar-row"><div class="bar-label">${s.label}</div><div class="bar-track"><div class="bar-fill" style="width:${s.val/100}%;background:${GREEN}"></div></div><div class="bar-val">${s.val.toLocaleString()}</div></div>`).join('');
+  return `<p class="intro">Weekday schedule. Gym first, study, office, grow. Tap any block for details.</p>
+    ${renderTimeline(daily,'d')}
+    <div class="card"><div class="card-title" style="color:${GREEN}">🦶 Steps Breakdown — 10,000 Total</div>${stepsHtml}</div>`;
+}
+
+let currentWeekendDay = 'saturday';
+function renderWeekend() {
+  return `<div class="day-toggle">
+      <button onclick="switchWeekendDay('saturday')" style="background:${currentWeekendDay==='saturday'?ACCENT:'#141414'};color:${currentWeekendDay==='saturday'?'#fff':'#888'}">⚡ Saturday</button>
+      <button onclick="switchWeekendDay('sunday')" style="background:${currentWeekendDay==='sunday'?ACCENT:'#141414'};color:${currentWeekendDay==='sunday'?'#fff':'#888'}">🔄 Sunday</button>
+    </div>
+    <div id="weekend-timeline">${renderTimeline(weekend[currentWeekendDay],'w')}</div>`;
+}
+
+function renderStudy() {
+  return `<p class="intro">24 weeks. 2-3 certs + portfolio + AI skills. Tap each block.</p>` +
+    studyPlan.map((b, i) => `<div class="study-block" onclick="toggleCard(this)">
+      <div class="head">
+        <div class="num" style="background:${b.color}22;color:${b.color}">${i+1}</div>
+        <div><div class="week" style="color:${b.color}">${b.week}</div><div class="name">${esc(b.title)}</div></div>
+      </div>
+      <div class="study-detail">
+        <div class="sub-title" style="color:${b.color}">TOPICS:</div>
+        ${b.topics.map(t => `<div class="line-item" style="border-left:2px solid ${b.color}33">${esc(t)}</div>`).join('')}
+        <div class="sub-title" style="color:${b.color};margin-top:12px">RESOURCES:</div>
+        ${b.resources.map(r => `<div class="resource" style="border-left:2px solid ${b.color}22">📌 ${esc(r)}</div>`).join('')}
+        <div class="cert-box" style="background:${b.color}15;color:${b.color}">🎯 ${esc(b.cert)}</div>
+      </div>
+    </div>`).join('');
+}
+
+function renderMeals() {
+  const mealsHtml = meals.items.map(m => {
+    const itemsHtml = m.items.map(it => `<div class="line-item" style="border-left:2px solid ${WARM}33;font-size:12px">${esc(it)}</div>`).join('');
+    return `<div class="expand" onclick="toggleCard(this)">
+      <div class="expand-head"><span class="title">${esc(m.meal)} • ${m.cal}</span><span class="toggle">+</span></div>
+      <div class="expand-detail">${itemsHtml}<div style="margin-top:8px;padding:6px 10px;background:${WARM}15;border-radius:6px;font-size:11px;color:${WARM}">💡 ${esc(m.note)}</div></div>
+    </div>`;
+  }).join('');
+  const groceryHtml = meals.grocery.map(g => `<div style="margin-bottom:8px"><div style="font-size:12px;font-weight:700;color:${GREEN};margin-bottom:3px">${g.cat}</div><div style="font-size:11px;color:#bbb;line-height:1.6;padding-left:12px;border-left:2px solid ${GREEN}22">${esc(g.items)}</div></div>`).join('');
+  const rulesHtml = meals.rules.map(r => `<div class="line-item" style="border-left:2px solid ${ACCENT}33">${esc(r)}</div>`).join('');
+  return `<p class="intro">~1800-2000 cal/day. High protein, Indian food focused. Tap each meal.</p>
+    ${mealsHtml}
+    <div class="card"><div class="card-title" style="color:${GREEN}">🛒 Weekly Grocery List</div>${groceryHtml}</div>
+    <div class="card"><div class="card-title" style="color:${ACCENT}">📏 Nutrition Rules</div>${rulesHtml}</div>`;
+}
+
+function renderMindset() {
+  const items = mindset.map(m => ({...m, title: m.rule}));
+  return `<p class="intro">The most important tab. 8 rules = your mental OS upgrade.</p>
+    ${renderExpand(items, PURPLE)}
+    <div class="gradient-box" style="background:linear-gradient(135deg,${PURPLE}22,${ACCENT}22);border:1px solid ${PURPLE}44">
+      <div style="font-size:14px;font-weight:800;color:#fff;margin-bottom:6px">"I can do hard things."</div>
+      <div style="font-size:12px;color:#ccc;line-height:1.7">Say it at 7 AM. At the gym. When gossip calls. When Terraform breaks at 10 PM. This is your mantra.</div>
+    </div>`;
+}
+
+function renderDetox() {
+  const removeHtml = detox.remove.map(s => `<div class="item-row"><span class="emoji">${s.icon}</span><div><div class="item-title" style="color:${RED}">${esc(s.app)}</div><div class="item-desc">${esc(s.action)}</div></div></div>`).join('');
+  const replaceHtml = detox.replace.map(s => `<div class="item-row"><span class="emoji">${s.icon}</span><div><div class="replace-old" style="color:${RED}">${esc(s.old)}</div><div class="replace-new" style="color:${GREEN}">→ ${esc(s.rep)}</div></div></div>`).join('');
+  const rulesHtml = detox.rules.map(r => `<div class="line-item" style="border-left:2px solid ${BLUE}33">${esc(r)}</div>`).join('');
+  return `<p class="intro">Your phone is either a growth tool or a weapon against you.</p>
+    <div class="card"><div class="card-title" style="color:${RED}">🗑️ DELETE / LIMIT</div>${removeHtml}</div>
+    <div class="card"><div class="card-title" style="color:${GREEN}">🔄 Replace With</div>${replaceHtml}</div>
+    <div class="card"><div class="card-title" style="color:${BLUE}">📜 Phone Rules</div>${rulesHtml}</div>`;
+}
+
+function renderPortfolio() {
+  const projHtml = portfolio.projects.map(p => `<div class="expand" onclick="toggleCard(this)">
+    <div class="expand-head"><span class="emoji">📁</span><span class="title">${esc(p.name)}</span><span class="toggle">+</span></div>
+    <div class="expand-detail"><div style="line-height:1.7;margin-bottom:8px">${esc(p.desc)}</div>${badge(p.time, p.color)}</div>
+  </div>`).join('');
+  const profileHtml = portfolio.profile.map(p => `<div class="line-item" style="border-left:2px solid ${TEAL}33">${esc(p)}</div>`).join('');
+  return `<p class="intro">GitHub IS your resume in 2026. 4 projects that make recruiters come to YOU.</p>
+    ${projHtml}
+    <div class="card"><div class="card-title" style="color:${TEAL}">👤 GitHub Profile Checklist</div>${profileHtml}</div>`;
+}
+
+function renderNetwork() {
+  const lnHtml = networking.linkedin.map(n => `<div class="expand" onclick="toggleCard(this)">
+    <div class="expand-head"><span class="emoji">🔗</span><span class="title">${esc(n.action)}</span><span class="toggle">+</span></div>
+    <div class="expand-detail"><div style="line-height:1.7;margin-bottom:8px">${esc(n.detail)}</div>${badge(n.freq, BLUE)}</div>
+  </div>`).join('');
+  const commHtml = networking.communities.map(c => `<div class="community"><div style="display:flex;align-items:center;gap:6px"><span class="name">${esc(c.name)}</span>${badge(c.type, PURPLE)}</div><div class="desc">${esc(c.desc)}</div></div>`).join('');
+  return `<p class="intro">80% of jobs filled through networking. LinkedIn + community = hired faster.</p>
+    <div style="font-size:12px;font-weight:700;color:${ACCENT};margin-bottom:12px;padding:10px 14px;background:${ACCENT}15;border-radius:8px">🎯 Weekly: 15 applications + 5 cold DMs + 1 LinkedIn post + 2 community interactions</div>
+    ${lnHtml}
+    <div class="card"><div class="card-title" style="color:${PURPLE}">🌐 Communities to Join</div>${commHtml}</div>`;
+}
+
+function renderHabits() {
+  const dailyHtml = habits.daily.map(h => `<div class="score-row"><span class="emoji">${h.icon}</span><span class="habit">${esc(h.habit)}</span><span class="score-pts" style="background:${GREEN}22;color:${GREEN}">+${h.pts}</span></div>`).join('');
+  const toolsHtml = habits.tools.map(tl => `<div class="expand" onclick="toggleCard(this)">
+    <div class="expand-head"><span class="emoji">${tl.icon}</span><span class="title">${esc(tl.tool)}</span><span class="toggle">+</span></div>
+    <div class="expand-detail">${esc(tl.detail)}</div>
+  </div>`).join('');
+  return `<p class="intro">Without tracking, plans die in 2 weeks. Score yourself daily.</p>
+    <div class="card"><div class="card-title" style="color:${GREEN}">📊 Daily Scorecard (65 pts possible)</div>${dailyHtml}
+      <div style="margin-top:10px;padding:8px 12px;background:${GREEN}12;border-radius:8px;font-size:11px;color:${GREEN};line-height:1.6">50+ = great day • 40-49 = good day • Below 40 = review and fix</div>
+    </div>
+    <div style="font-size:12px;font-weight:700;color:${PURPLE};margin-bottom:8px">🛠️ Tracking Tools</div>
+    ${toolsHtml}`;
+}
+
+function renderBadDay() {
+  const minHtml = badDay.minimum.map(m => `<div class="item-row"><span class="emoji">${m.icon}</span><div><div class="item-title" style="color:${WARM}">${esc(m.task)}</div><div class="item-desc">${esc(m.detail)}</div></div></div>`).join('');
+  const trigHtml = badDay.triggers.map(tr => `<div class="expand" onclick="toggleCard(this)">
+    <div class="expand-head"><span class="emoji">🔥</span><span class="title">${esc(tr.trigger)}</span><span class="toggle">+</span></div>
+    <div class="expand-detail">${esc(tr.response)}</div>
+  </div>`).join('');
+  return `<p class="intro">Bad days WILL come. This is your emergency protocol.</p>
+    <div class="card"><div class="card-title" style="color:${WARM}">🛟 Minimum Viable Day (motivation = 0)</div>${minHtml}</div>
+    <div style="font-size:12px;font-weight:700;color:${RED};margin-bottom:8px">⚡ Trigger → Response Playbook</div>
+    ${trigHtml}
+    <div class="gradient-box" style="background:linear-gradient(135deg,${WARM}22,${ACCENT}22);border:1px solid ${WARM}44">
+      <div style="font-size:12px;color:#ccc;line-height:1.8;font-style:italic">${esc(badDay.mantra)}</div>
+    </div>`;
+}
+
+function renderContent() {
+  return `<p class="intro">1 post/month. Tech + fitness + mindset = rare combo.</p>` +
+    contentPlan.map(c => `<div class="content-card">
+      <div class="content-head">
+        <div class="content-month" style="background:${ACCENT}22;color:${ACCENT}">M${c.month}</div>
+        <div><div style="font-size:13px;font-weight:700">${esc(c.topic)}</div><div style="font-size:10px;color:${MUTED};margin-top:1px">${c.format}</div></div>
+      </div>
+      <div style="font-size:12px;color:#bbb;line-height:1.5;margin-bottom:6px">${esc(c.hook)}</div>
+      <div style="font-size:10px;color:${BLUE}">${c.tags}</div>
+    </div>`).join('');
+}
+
+function renderWeekly() {
+  const daysHtml = weeklyData.map((d, i) => {
+    const we = i >= 5;
+    const rows = [{l:'GYM',v:d.gym,c:GREEN},{l:'AM',v:d.am,c:BLUE},{l:'PM',v:d.pm,c:PURPLE},{l:'EXTRA',v:d.extra,c:WARM}];
+    return `<div class="weekly-day" style="background:${we?ACCENT+'0a':'#141414'};border:1px solid ${we?ACCENT+'33':'#222'}">
+      <div style="font-size:13px;font-weight:800;color:${we?ACCENT:'#fff'};margin-bottom:8px">${d.day} ${we?'⭐':''}</div>
+      ${rows.map(r => `<div class="weekly-row"><div class="weekly-label" style="color:${r.c}">${r.l}</div><div class="weekly-val">${esc(r.v)}</div></div>`).join('')}
+    </div>`;
+  }).join('');
+  const targets = [{l:'Applications',v:'15/wk',c:ACCENT},{l:'Study',v:'14hrs',c:BLUE},{l:'Steps',v:'70K',c:GREEN},{l:'Gym',v:'6x',c:PURPLE},{l:'LinkedIn',v:'1 post',c:TEAL},{l:'Cold DMs',v:'5/wk',c:WARM}];
+  const targetsHtml = targets.map(g => `<div class="target-box" style="background:${g.c}11"><div class="target-val" style="color:${g.c}">${g.v}</div><div class="target-label">${g.l}</div></div>`).join('');
+  return `<p class="intro">Week at a glance. Mon-Fri grind. Saturday power day. Sunday recover + plan.</p>
+    ${daysHtml}
+    <div class="card"><div class="card-title" style="color:${ACCENT}">🎯 Weekly Targets</div><div class="targets-grid">${targetsHtml}</div></div>`;
+}
+
+// ===== INIT =====
+let activeTab = 0;
+
+function initTabs() {
+  const tabsEl = document.getElementById('tabs');
+  tabsEl.innerHTML = tabsData.map((tb, i) => `<button class="tab-btn ${i===0?'active':''}" onclick="switchTab(${i})"><div class="icon">${tb.icon}</div><div class="label">${tb.label}</div></button>`).join('');
+}
+
+function switchTab(i) {
+  activeTab = i;
+  currentWeekendDay = 'saturday';
+  document.querySelectorAll('.tab-btn').forEach((btn, j) => btn.classList.toggle('active', j === i));
+  document.getElementById('content').innerHTML = renderTab(i);
+}
+
+function toggleCard(el) {
+  el.classList.toggle('open');
+  const toggle = el.querySelector('.toggle');
+  if (toggle) toggle.textContent = el.classList.contains('open') ? '−' : '+';
+}
+
+function switchWeekendDay(day) {
+  currentWeekendDay = day;
+  document.getElementById('content').innerHTML = renderWeekend();
+}
+
+initTabs();
+switchTab(0);
+</script>
+</body>
+</html>
